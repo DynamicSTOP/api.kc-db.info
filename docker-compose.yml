@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  nodeapp:
+    tty: true
+    build: .
+    env_file:
+      - .env
+    ports:
+     - "${APP_PORT}:3010"
+    image: kcexport
+    volumes:
+    - "${PWD}:/app"
+    links:
+      - redis
+    depends_on:
+      - redis
+
+
+  redis:
+     tty: true
+     image: redis:alpine
+     volumes:
+       - "${PWD}/redis.conf:/usr/local/etc/redis/redis.conf:ro"
+       - redis_data:/data
+
+     command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+
+volumes:
+  redis_data:
