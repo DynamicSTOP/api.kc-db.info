@@ -63,13 +63,24 @@ function startApp() {
     app.use(bodyParser.json()); // for parsing application/json
     app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
 
+    app.use(function (req, res, next) {
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
+        res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, X-Requested-With');
+
+        if ('OPTIONS' === req.method) {
+            res.send(200);
+        } else {
+            next();
+        }
+    });
+
     app.get('/', (req, res) => {
         res.json({info: 'api endpoint for https://export.kc-db.info service'});
     });
 
 
     app.get('/list/ships/:id', (req, response) => {
-        response.setHeader("Access-Control-Allow-Origin", "*");
         RedisClient.hgetall(`list:ships:${req.params.id}`, (err, res) => {
             if (err !== null) {
                 console.error(`can't read list "list:${req.params.id}"`);
