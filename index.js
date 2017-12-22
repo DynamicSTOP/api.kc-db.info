@@ -108,7 +108,7 @@ function startApp() {
             req.body.data.length === 0
         ) {
             console.error(`Invalid data submitted from ${JSON.stringify(req.ip)} ${JSON.stringify(req.ips)}`);
-            response.status(500).json({error: "Invalid data"});
+            response.status(400).json({error: "Invalid data", description:"data is unset or empty"});
             return;
         }
 
@@ -116,7 +116,7 @@ function startApp() {
             datapacker._validate(req.body.data);
         } catch (err) {
             console.error(`Can't validate from ${JSON.stringify(req.ip)} ${JSON.stringify(req.ips)} error: ${err}`);
-            res.status(500).json({error: "Invalid data format"});
+            res.status(400).json({error: "Invalid data format", description: err.message});
             return;
         }
 
